@@ -1,7 +1,7 @@
 # Awesome Semantic Segmentation Model
 
-该代码是一套功能完备、高灵活性、一站式的多模型语义分割统一训练框架，全面整合了U-Net、DeepLab、ENet、FCN、HRNet、SegNet、RefineNet、PSPNet、SegFormer、SETR、UperNet、OCRNet、Mask2Former、SegNeXt共14种主流语义分割模型，针对语义分割任务的训练需求做了全方位的配置与优化，可直接应用于冰川分割、遥感影像解译、医学影像分割等各类像素级分类场景，同时也适用于不同分割模型的性能对比与选型研究。
-框架通过命令行参数实现了全流程的灵活配置，支持单GPU、指定多 GPU、全GPU三种训练模式，可自由切换 Adam/SGD优化器、交叉熵损失函数(ce loss)/焦点损失函数(focal loss)、Poly/Step/Cos/Exp学习率调度器，以及Kaiming/Normal/Xavier/Orthogonal多种权重初始化方式，适配不同模型的训练特性；为保障训练的稳定性与复现性，代码初始化时固定了随机种子，关闭了cudnn的随机化策略，训练前会自动清空GPU缓存，同时对预训练权重加载做了优化处理，自动移除多卡训练产生的module.前缀并设置非严格匹配，无预训练权重时则自动执行权重初始化。框架实现了从模型实例化、数据集加载、训练迭代到验证评估、模型保存、日志记录的端到端流程，基于自定义Labeled_Model_Dataset数据集类和DataLoader完成高效的数据批量加载，训练与验证过程通过tqdm实现实时进度与损失监控，验证阶段完成Acc、Kappa、mIoU、FWIoU、Precision、Recall、F1-Score、F2-Score等全维度性能指标的计算，同时输出各类别的单独指标，实现模型性能的精准分析。
+该代码是一套功能完备、高灵活性、一站式的多模型语义分割统一训练框架，全面整合了U-Net、DeepLab、ENet、FCN、HRNet、SegNet、RefineNet、PSPNet、SegFormer、SETR、UperNet、OCRNet、Mask2Former、SegNeXt共14种主流语义分割模型，同时，已经尽力完善所有模型的高配低配版本(例如Swin-T/Swin-S/Swin-B/Swin-L)，且在模型调用时可以手动修改。我们针对语义分割任务的训练需求做了全方位的配置与优化，可直接应用于冰川分割、遥感影像解译、医学影像分割等各类像素级分类场景，同时也适用于不同分割模型的性能对比与选型研究。
+框架通过命令行参数实现了全流程的灵活配置，支持单GPU、指定多 GPU、全GPU三种训练模式，可自由切换 Adam/SGD优化器、交叉熵损失函数(ce loss)/焦点损失函数(focal loss)、Poly/Step/Cos/Exp学习率调度器，以及Kaiming/Normal/Xavier/Orthogonal多种权重初始化方式，适配不同模型的训练特性；为保障训练的稳定性与复现性，代码初始化时固定了随机种子，关闭了cudnn的随机化策略，训练前会自动清空GPU缓存，同时对预训练权重加载做了优化处理，自动移除多卡训练产生的module.前缀并设置非严格匹配，无预训练权重时则自动执行权重初始化。框架实现了从模型实例化、数据集加载、训练迭代到验证评估、模型保存、日志记录的端到端流程，基于Dataset数据集类和DataLoader完成高效的数据批量加载，训练与验证过程通过tqdm实现实时进度与损失监控，验证阶段完成Acc、Kappa、mIoU、FWIoU、Precision、Recall、F1-Score、F2-Score等全维度性能指标的计算，同时输出各类别的单独指标，实现模型性能的精准分析。
 针对语义分割任务中常见的数据不平衡问题，框架引入了自定义类别权重进行损失加权；训练过程中会按指定周期自动保存模型权重至专属目录，同时将每轮的训练损失、验证损失及所有评估指标写入CSV格式日志文件，方便后续的训练曲线绘制与性能复盘。整体代码结构清晰、模块化程度高，核心训练逻辑与模型配置解耦，通过修改--MODEL_TYPE参数即可快速切换不同分割模型，无需改动训练主流程，同时兼顾了训练效率与部署兼容性，自动处理多卡训练权重的格式问题，为语义分割模型的训练与研究提供了开箱即用的解决方案，仅需配置数据集路径与少量训练参数即可启动训练，大幅降低了多模型语义分割的训练门槛。
 
 ## 📝 作者信息
@@ -21,20 +21,20 @@
 
 可以在 `--MODEL_TYPE` 参数中指定以下模型：
 
-* `unet`
-* `deeplab` (DeepLabV3+)
-* `pspnet`
-* `hrnet` (HRNetV2)
-* `segnet`
-* `fcn` (FCN16s, 8s, 32s)
-* `enet`
-* `refinenet`
-* `segformer`
-* `setr` (SETR)
-* `upernet`
-* `ocrnet` (HRNet + OCR)
-* `segnext`
-* `mask2former` (Experimental)
+* `Unet`       (vgg11/13/16/19、resnet18/34/50/101/152)
+* `Deeplab`    (xception/mobilenet/resnet/vggnet/inception)
+* `PSPNet`     (mobilenetv2/resnet50)
+* `HRNet`      (V1:w18/w32/w48 ; V2:w18/w32/w48)
+* `SegNet`     (vgg16)
+* `FCN`        (fcn 16s/8s/32s)
+* `ENet`       None
+* `RefineNet`  (ResNet50/101/152)
+* `Segformer`  (b0/b1/b2/b3/b4/b5)
+* `SETR`       (Base/Large)
+* `UperNet`    (Swin-T)
+* `OCRNet`     (V2:w18/w32/w48)
+* `SegNext`    (T/S/B/L)
+* `Mask2Former` (代码有误，暂未修改，不建议用)
 
 ## 📂 目录结构
 
@@ -55,18 +55,18 @@
 ├── train.py             # 训练主程序
 ├── Structure.py         # 预测阶段用于重构网络结构
 ├── predict_small.py     # 预测小尺寸(256*256)的结果
-├── predict_large.py     # 预测大尺寸(例如1024*2975)的结果
-└──               
+└── predict_large.py     # 预测大尺寸(例如1024*2975)的结果
+               
 ```
 
 ## 🚀 快速开始 (Quick Start)
 
-** 1. 环境准备确保安装了 PyTorch 和必要的依赖库
-\```bash
-pip install torch torchvision numpy tqdm
-\```
+**1.环境准备确保安装了 PyTorch 和必要的依赖库**
+```bash
+pip install torch torchvision numpy tqdm torchinfo thop csv
+```
 
-**2. 准备数据列表**
+**2.准备数据列表**
 在 datasets/annotations/ 下创建 train.txt 和 val.txt。每一行包含图像的文件名。
 ```示例：
    train.txt: 001
@@ -78,23 +78,26 @@ pip install torch torchvision numpy tqdm
               003
               ...
 ```
-**3. 启动训练**
-基础运行 (默认 Unet):
-\```bash
+**3.启动训练**
+基础运行 (默认Unet):
+bash
+```
 python train.py
-\```
+```
 
 **4.指定模型与参数:**
 例如使用 SegFormer，Batch Size 为 8，训练 100 轮：
-\```bash
+bash
+```
 python train.py --MODEL_TYPE segformer --BATCH_SIZE 8 --EPOCHS 100
-\```
+```
 
 **5.多 GPU 并行训练:**
 例如指定使用 GPU 0 和 GPU 1：
-\```bash
+bash
+```
 python train.py --MODE muti --GPU_LIST "0,1" --BATCH_SIZE 16
-\```
+```
 
 ## ⚙️ 参数说明 (Arguments)
 你可以在命令行中调整以下参数：
@@ -126,7 +129,7 @@ python train.py --MODE muti --GPU_LIST "0,1" --BATCH_SIZE 16
 
 # ⚠️ 注意事项 (Important Note)
 代码中 (train.py 第 127 行) 包含硬编码的类别权重：
-\```python
+```
 weight = np.array([0.03247, 0.25926, 0.70827], np.float32)
-\```
-请务必在使用前根据你自己数据集的类别分布修改此权重，或者将其注释掉以使用默认的平均权重，否则会严重影响训练效果。
+```
+***请务必在使用前根据你自己数据集的类别分布修改此权重，或者将其注释掉以使用默认的平均权重，否则会严重影响训练效果。***
