@@ -1,7 +1,7 @@
 # encoding = utf-8
 
 # @Author  ：Lecheng Wang
-# @Time    : ${DATE} ${TIME}
+# @Time    : 2026/01/11  23:47
 # @function: 用于计算每轮预测准确率时，前向网络权值装载和预测分割结果的生成
 
 
