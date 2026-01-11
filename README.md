@@ -1,2 +1,52 @@
-# Awesome-Segmention-Model
-Integrate unet, deeplab, enet, pspnet, hrnet, segnet, refinenet, fcn, segformer, setr, upernet, ocrnet, mask2former, 14 segnext sematic segmention models
+# PyTorch Semantic Segmentation Toolbox
+
+这是一个基于 PyTorch 实现的多功能语义分割训练框架。项目集成了多种主流的分割网络（如 UNet, DeepLabV3+, SegFormer, HRNet 等），支持多波段输入（适用于遥感图像），并提供了灵活的多 GPU 训练策略和完善的指标评估。
+
+## 📝 作者信息
+* **Author**: Lecheng Wang
+* **Time**: 2026/1/11
+
+## ✨ 主要特性
+
+* **多模型支持**：集成了 CNN (UNet, DeepLab, HRNet...) 和 Transformer (SegFormer, SETR, SegNeXt...) 系列共 10+ 种模型。
+* **多波段支持**：默认支持多通道输入（代码默认为 10 通道），非常适合遥感或多光谱图像分割任务。
+* **灵活的训练模式**：支持单卡 (Single)、指定多卡 (Multi-list) 和全卡 (All) 并行训练。
+* **多种 Loss 函数**：支持 CrossEntropy 和 Focal Loss。
+* **完善的日志系统**：自动保存训练日志 (`.csv`)，记录 mIoU, Kappa, F1-score, Precision, Recall 等详细指标。
+* **学习率策略**：支持 Poly, Step, Cosine, Exponential 等多种衰减策略。
+
+## 🏗️ 支持的模型 (Model Zoo)
+
+可以在 `--MODEL_TYPE` 参数中指定以下模型：
+
+* `unet`
+* `deeplab` (DeepLabV3+)
+* `pspnet`
+* `hrnet` (HRNetV2)
+* `segnet`
+* `fcn` (FCN16s, 8s, 32s)
+* `enet`
+* `refinenet`
+* `segformer`
+* `setr` (SETR)
+* `upernet`
+* `ocrnet` (HRNet + OCR)
+* `segnext`
+* `mask2former` (Experimental)
+
+## 📂 目录结构
+
+请按照以下结构组织你的项目和数据：
+
+```text
+├── datasets/
+│   ├── annotations/
+│   │   ├── train.txt    # 训练集列表 (格式: 图片路径 标签路径)
+│   │   └── val.txt      # 验证集列表
+│   ├── images/          # 图片存放目录
+│   └── labels/          # 标签存放目录
+├── nets/                # 模型定义文件
+├── utils/               # 工具类 (dataset, metrics, losses 等)
+├── pth_files/           # (自动生成) 存放训练好的模型权重
+├── train.py             # 训练主程序
+└── ...
