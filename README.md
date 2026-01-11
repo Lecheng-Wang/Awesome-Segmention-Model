@@ -54,11 +54,13 @@
 
 ## 🚀 快速开始 (Quick Start)
 
-** ①. 环境准备确保安装了 PyTorch 和必要的依赖库
+** 1. 环境准备确保安装了 PyTorch 和必要的依赖库
 \```bash
 pip install torch torchvision numpy tqdm
 \```
-** ②.数据准备在 datasets/annotations/ 下创建 train.txt 和 val.txt。每一行包含图像的文件名。
+
+** 2. 准备数据列表
+在 datasets/annotations/ 下创建 train.txt 和 val.txt。每一行包含图像的文件名。
 ```示例：
    train.txt: 001
               002
@@ -69,29 +71,19 @@ pip install torch torchvision numpy tqdm
               003
               ...
 ```
-## 2. 准备数据列表
-请在 `datasets/annotations/` 下创建 `train.txt` 和 `val.txt`。
-
-文件内容示例：
-\```
-images/city_1.tif labels/city_1.png
-images/city_2.tif labels/city_2.png
-...
-\```
-
-## 3. 启动训练
+** 3. 启动训练
 **基础运行 (默认 Unet):**
 \```bash
 python train.py
 \```
 
-**指定模型与参数:**
+** 4.指定模型与参数:**
 例如使用 SegFormer，Batch Size 为 8，训练 100 轮：
 \```bash
 python train.py --MODEL_TYPE segformer --BATCH_SIZE 8 --EPOCHS 100
 \```
 
-**多 GPU 并行训练:**
+** 5.多 GPU 并行训练:**
 例如指定使用 GPU 0 和 GPU 1：
 \```bash
 python train.py --MODE muti --GPU_LIST "0,1" --BATCH_SIZE 16
