@@ -97,7 +97,7 @@ python train.py --MODE muti --GPU_LIST "0,1" --BATCH_SIZE 16
 | --DATASET_PATH | ./datasets/ | 数据集根路径 | - |
 | --MODE | all | 训练模式 | single, muti, all |
 | --GPU_LIST | 1,2 | 多卡模式下的设备 ID | 如 "0,1,2,3" |
-| --MODEL_TYPE | unet | 模型架构 | 见 Model Zoo |
+| --MODEL_TYPE | unet | 模型架构 | U-Net、DeepLab、ENet、FCN、HRNet、SegNet、RefineNet、PSPNet、SegFormer、SETR、UperNet、OCRNet、Mask2Former、SegNeXt |
 | --BACKBONE_TYPE | resnet50 | 骨干网络 | unet:vgg11/13/16/19、resnet18/34/50/101/152   deeplab:xception/mobilenet/resnet/vggnet/inception|
 | --BANDS | 10 | 输入图片通道数 | 根据数据修改 (RGB=3) |
 | --NUM_CLASS | 3 | 类别总数 (含背景) | - |
