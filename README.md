@@ -1,10 +1,10 @@
-# PyTorch Semantic Segmentation Toolbox
+# Awesome Semantic Segmentation Model
 
-这是一个基于 PyTorch 实现的多功能语义分割训练框架。项目集成了多种主流的分割网络（如 UNet, DeepLabV3+, SegFormer, HRNet 等），支持多波段输入（适用于遥感图像），并提供了灵活的多 GPU 训练策略和完善的指标评估。
+该代码是一套功能完备、高灵活性、一站式的多模型语义分割统一训练框架，全面整合了 U-Net、DeepLab、ENet、FCN、HRNet、SegNet、RefineNet、PSPNet、SegFormer、SETR、UperNet、OCRNet、Mask2Former、SegNeXt 共 14 种主流语义分割模型，针对语义分割任务的训练需求做了全方位的配置与优化，可直接应用于冰川分割、遥感影像解译、医学影像分割等各类像素级分类场景，同时也适用于不同分割模型的性能对比与选型研究。框架通过命令行参数实现了全流程的灵活配置，支持单 GPU、指定多 GPU、全 GPU 三种训练模式，可自由切换 Adam/SGD 优化器、交叉熵 / 焦点损失函数、Poly/Step/Cos/Exp 学习率调度器，以及 Kaiming/Normal/Xavier/Orthogonal 多种权重初始化方式，适配不同模型的训练特性；为保障训练的稳定性与复现性，代码初始化时固定了随机种子，关闭了 cudnn 的随机化策略，训练前会自动清空 GPU 缓存，同时对预训练权重加载做了优化处理，自动移除多卡训练产生的module.前缀并设置非严格匹配，无预训练权重时则自动执行权重初始化。框架实现了从模型实例化、数据集加载、训练迭代到验证评估、模型保存、日志记录的端到端流程，基于自定义 Labeled_Model_Dataset 数据集类和 DataLoader 完成高效的数据批量加载，训练与验证过程通过 tqdm 实现实时进度与损失监控，验证阶段依托 Evaluator 类完成 Acc、Kappa、mIoU、FWIoU、Precision、Recall、F1-Score、F2-Score 等全维度性能指标的计算，同时输出各类别的单独指标，实现模型性能的精准分析。针对语义分割任务中常见的数据不平衡问题，框架引入了自定义类别权重进行损失加权；训练过程中会按指定周期自动保存模型权重至专属目录，同时将每轮的训练损失、验证损失及所有评估指标写入 CSV 格式日志文件，方便后续的训练曲线绘制与性能复盘。整体代码结构清晰、模块化程度高，核心训练逻辑与模型配置解耦，通过修改--MODEL_TYPE参数即可快速切换不同分割模型，无需改动训练主流程，同时兼顾了训练效率与部署兼容性，自动处理多卡训练权重的格式问题，为语义分割模型的训练与研究提供了开箱即用的解决方案，仅需配置数据集路径与少量训练参数即可启动训练，大幅降低了多模型语义分割的训练门槛。
 
 ## 📝 作者信息
 * **Author**: Lecheng Wang
-* **Time**: 2026/1/11
+* **Time**: 2026/1/11 (last updated)
 
 ## ✨ 主要特性
 
@@ -15,7 +15,7 @@
 * **完善的日志系统**：自动保存训练日志 (`.csv`)，记录 mIoU, Kappa, F1-score, Precision, Recall 等详细指标。
 * **学习率策略**：支持 Poly, Step, Cosine, Exponential 等多种衰减策略。
 
-## 🏗️ 支持的模型 (Model Zoo)
+## 🏗️ 支持的模型
 
 可以在 `--MODEL_TYPE` 参数中指定以下模型：
 
@@ -59,7 +59,7 @@
 pip install torch torchvision numpy tqdm
 \```
 
-** 2. 准备数据列表
+**2. 准备数据列表**
 在 datasets/annotations/ 下创建 train.txt 和 val.txt。每一行包含图像的文件名。
 ```示例：
    train.txt: 001
@@ -71,19 +71,19 @@ pip install torch torchvision numpy tqdm
               003
               ...
 ```
-** 3. 启动训练
-**基础运行 (默认 Unet):**
+**3. 启动训练**
+基础运行 (默认 Unet):
 \```bash
 python train.py
 \```
 
-** 4.指定模型与参数:**
+**4.指定模型与参数:**
 例如使用 SegFormer，Batch Size 为 8，训练 100 轮：
 \```bash
 python train.py --MODEL_TYPE segformer --BATCH_SIZE 8 --EPOCHS 100
 \```
 
-** 5.多 GPU 并行训练:**
+**5.多 GPU 并行训练:**
 例如指定使用 GPU 0 和 GPU 1：
 \```bash
 python train.py --MODE muti --GPU_LIST "0,1" --BATCH_SIZE 16
