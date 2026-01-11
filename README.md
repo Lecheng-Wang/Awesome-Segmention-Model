@@ -50,3 +50,83 @@
 ├── pth_files/           # (自动生成) 存放训练好的模型权重
 ├── train.py             # 训练主程序
 └── ...
+
+## 🚀 快速开始 (Quick Start)
+
+** ①. 环境准备确保安装了 PyTorch 和必要的依赖库
+\```bash
+pip install torch torchvision numpy tqdm
+\```
+** ②.数据准备在 datasets/annotations/ 下创建 train.txt 和 val.txt。每一行包含图像的文件名。
+```示例：
+   train.txt: 001
+              002
+              003
+              ...
+   val.txt :  001
+              002
+              003
+              ...
+```
+## 2. 准备数据列表
+请在 `datasets/annotations/` 下创建 `train.txt` 和 `val.txt`。
+
+文件内容示例：
+\```
+images/city_1.tif labels/city_1.png
+images/city_2.tif labels/city_2.png
+...
+\```
+
+## 3. 启动训练
+**基础运行 (默认 Unet):**
+\```bash
+python train.py
+\```
+
+**指定模型与参数:**
+例如使用 SegFormer，Batch Size 为 8，训练 100 轮：
+\```bash
+python train.py --MODEL_TYPE segformer --BATCH_SIZE 8 --EPOCHS 100
+\```
+
+**多 GPU 并行训练:**
+例如指定使用 GPU 0 和 GPU 1：
+\```bash
+python train.py --MODE muti --GPU_LIST "0,1" --BATCH_SIZE 16
+\```
+
+## ⚙️ 参数说明 (Arguments)
+你可以在命令行中调整以下参数：
+
+| 参数名 | 默认值 | 说明 | 可选值 |
+|---|---|---|---|
+| --DATASET_PATH | ./datasets/ | 数据集根路径 | - |
+| --MODE | all | 训练模式 | single, muti, all |
+| --GPU_LIST | 1,2 | 多卡模式下的设备 ID | 如 "0,1,2,3" |
+| --MODEL_TYPE | unet | 模型架构 | 见 Model Zoo |
+| --BACKBONE_TYPE | resnet50 | 骨干网络 | resnet50, vgg16, b0... |
+| --BANDS | 10 | 输入图片通道数 | 根据数据修改 (RGB=3) |
+| --NUM_CLASS | 3 | 类别总数 (含背景) | - |
+| --BATCH_SIZE | 4 | 批处理大小 | - |
+| --EPOCHS | 1 | 训练轮数 | - |
+| --LOSS_TYPE | ce | 损失函数 | ce, focal |
+| --OPTIMIZER_TYPE | adam | 优化器 | adam, sgd |
+| --LR_SCHEDULER | poly | 学习率策略 | poly, step, cos, exp |
+| --PRETRAIN_MODEL | None | 预训练权重路径 | .pth 文件路径 |
+
+## 📊 结果记录
+程序运行后会生成：
+
+**训练日志 ({MODEL_TYPE}_training_log.csv):**
+记录每个 Epoch 的 Train Loss, Val Loss。记录详细指标：mIoU, Acc, Kappa, F1-Score, Precision, Recall (包含各类别的详细分数)。
+
+**模型权重 (pth_files/):**
+命名格式：{MODEL}-epoch{N}-loss{L}-val_loss{VL}.pth。根据 --MODEL_SAVE_EPOCHS 参数定期保存。
+
+# ⚠️ 注意事项 (Important Note)
+代码中 (train.py 第 127 行) 包含硬编码的类别权重：
+\```python
+weight = np.array([0.03247, 0.25926, 0.70827], np.float32)
+\```
+请务必在使用前根据你自己数据集的类别分布修改此权重，或者将其注释掉以使用默认的平均权重，否则会严重影响训练效果。
