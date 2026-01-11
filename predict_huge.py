@@ -10,7 +10,7 @@ import os
 # encoding = utf-8
 
 # @Author  ：Lecheng Wang
-# @Time    : ${2025/7/15} ${19:02}
+# @Time    : 2025/7/15   19:02
 # @function: 用于计算每轮预测准确率时，前向网络权值装载和预测分割结果的生成
 
 
