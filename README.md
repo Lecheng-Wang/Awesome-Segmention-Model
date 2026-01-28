@@ -107,19 +107,19 @@ python train.py --MODE muti --GPU_LIST "0,1" --BATCH_SIZE 16
 
 | 参数名 | 默认值 | 说明 | 可选值 |
 |---|---|---|---|
-| --DATASET_PATH | ./datasets/ | 数据集根路径 | - |
-| --MODE | all | 训练模式 | single, muti, all |
+| --DATASET_PATH | ./datasets/ | 数据集路径 | 可以根据当前位置设置相对路径 |
+| --MODE | all | 训练模式 | single, multi, all |
 | --GPU_LIST | 1,2 | 多卡模式下的设备 ID | 如 "0,1,2,3" |
 | --MODEL_TYPE | unet | 模型架构 | U-Net、DeepLab、ENet、FCN、HRNet、SegNet、RefineNet、PSPNet、SegFormer、SETR、UperNet、OCRNet、Mask2Former、SegNeXt |
 | --BACKBONE_TYPE | resnet50 | 骨干网络 | unet:vgg11/13/16/19、resnet18/34/50/101/152   deeplab:xception/mobilenet/resnet/vggnet/inception|
-| --BANDS | 10 | 输入图片通道数 | 根据数据修改 (RGB=3) |
-| --NUM_CLASS | 3 | 类别总数 (含背景) | - |
-| --BATCH_SIZE | 4 | 批处理大小 | - |
-| --EPOCHS | 1 | 训练轮数 | - |
+| --BANDS | 10 | 输入图片通道数 | 根据数据修改 如(RGB=3) |
+| --NUM_CLASS | 3 | 类别总数 (含背景) | 主要提取的类别数+背景类 |
+| --BATCH_SIZE | 4 | 批处理大小 | 4/8/16/32/64/... |
+| --EPOCHS | 1 | 训练轮数 | 100/150/200/300 |
 | --LOSS_TYPE | ce | 损失函数 | ce, focal |
 | --OPTIMIZER_TYPE | adam | 优化器 | adam, sgd |
 | --LR_SCHEDULER | poly | 学习率策略 | poly, step, cos, exp |
-| --PRETRAIN_MODEL | None | 预训练权重路径 | .pth 文件路径 |
+| --PRETRAIN_MODEL | None | 预训练权重路径 | ***.pth 文件路径 |
 
 ## 📊 结果记录
 程序运行后会生成：
