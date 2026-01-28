@@ -1,21 +1,16 @@
-import gdal
-from Structure import Model
-import numpy as np
-import rasterio
-from rasterio.features import shapes
-import geopandas as gpd
-from shapely.geometry import shape
-import os
-
 # encoding = utf-8
 
 # @Author  ：Lecheng Wang
-# @Time    : 2025/7/15   19:02
+# @Time    : 2025/7/15  19:02
 # @function: 用于计算每轮预测准确率时，前向网络权值装载和预测分割结果的生成
 
 
-from Structure import Model
+from Structure         import Model
+from shapely.geometry  import shape
+from rasterio.features import shapes
 
+import rasterio
+import geopandas as gpd
 import os
 import gdal
 import numpy as np
@@ -164,4 +159,5 @@ if __name__ == "__main__":
     img_name      = os.path.splitext(os.path.basename(img_in_path))[0]
     seg_out_path  = os.path.join(result_dir, f"seg_{img_name}_class.tif")
     seg_png_path  = os.path.join(result_dir, f"seg_{img_name}_png.tiff")
+
     main(cfg, model_path, img_in_path, seg_out_path, seg_png_path, shp_dir)
