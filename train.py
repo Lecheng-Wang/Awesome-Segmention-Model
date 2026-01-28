@@ -53,7 +53,7 @@ set_seed(42)  # Set seed at the beginning
 
 parser = argparse.ArgumentParser(description="Unet/DeeplabV3+/PSPNet/HRNet/SegNet/FCN/Segformer/SETR based on multi_backbone and multi_attention")
 parser.add_argument('--DATASET_PATH',      type=str,   default='./datasets/')
-parser.add_argument('--MODE',              type=str,   default='all', choices=['single','muti','all'])
+parser.add_argument('--MODE',              type=str,   default='all', choices=['single','multi','all'])
 parser.add_argument('--GPU_ID',            type=int,   default=0)
 parser.add_argument('--GPU_LIST',          type=str,   default='1,2')
 parser.add_argument('--USE_CPU',           type=bool,  default=False)
@@ -91,7 +91,7 @@ elif args.MODE=='single':
     device = torch.device(f'cuda:{args.GPU_ID}' if torch.cuda.is_available() else 'cpu')
     print(f"Single-GPU training mode will be used on {device}\n", flush=True)
 
-elif args.MODE=='muti':
+elif args.MODE=='multi':
     args.GPU_LIST = [int(gpu_id) for gpu_id in args.GPU_LIST.split(',')]
     if torch.cuda.is_available() and all(gpu < torch.cuda.device_count() for gpu in args.GPU_LIST):
         import os
@@ -166,7 +166,7 @@ def main ():
         print(f"=> No pretrained model found at '{args.PRETRAIN_MODEL}'")
         weights_init(model, init_type=args.INIT_TYPE)
 
-    if args.MODE in ['muti','all'] and (not args.USE_CPU):
+    if args.MODE in ['multi','all'] and (not args.USE_CPU):
         model = nn.DataParallel(model)
     model = model.to(device)
 
@@ -338,3 +338,4 @@ class Trainer(object):
 
 if __name__ == '__main__':
     main()
+
